@@ -1,0 +1,76 @@
+# Default values for pdbs.mambuaccountservice.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+nameOverride: ""
+fullnameOverride: ""
+logsLocation: /var/log/containers
+runasnonroot: true
+readonlyrootfilesystem: true
+runasuser: 1004190000
+runasgrp: 1004190000
+databaseJDBCUrlPrefix: jdbc:mysql://mysql:3306/
+databaseName: mysqldb
+isDBUsed: true
+datasourceConfigName: spring.datasource.jdbc-url
+environmentPropertyName: ENVIRONMENT
+environmentPropertyValue: development
+tenantNamePropertyName: TENANT_NAME
+
+deployments:
+  replicaCount: 1
+  name: mambu-account-service-deployment
+  labels:
+    app: mambu-account-service-deployment
+    selectorApp: mambuaccountservice
+  resources:
+    limits:
+      memory: 2048Mi
+      cpu: '2'
+    requests:
+      memory: 256Mi
+      cpu: '0.1'
+  image:
+    repository: image-registry.openshift-image-registry.svc:5000/openshift/mambuaccountservice
+    tag: v0.0.1
+    pullPolicy: IfNotPresent
+    imagePullSecrets: []
+  containerPort: 8080
+  configMap:
+    name: mambu-account-service-configmap
+    data:
+      - name: server.port
+        value: 8080
+      - name: spring.application.name
+        value: MambuAccountService
+      - name: MAMBU_CLIENT_URI
+        value: https://persistent.sandbox.mambu.com/api/
+      - name: server.servlet.context-path
+        value: /mambuaccountservice
+      - name: tokenValiditySeconds
+        value: 120
+#     - name: AWS_XRAY_DAEMON_ADDRESS
+#       value: xray-service.default:2000
+#      - name: spring.datasource.jdbc-interceptors
+#        value: com.amazonaws.xray.sql.mysql.TracingInterceptor
+  secrets:
+    type: Opaque
+    name: mambu-account-service-secrets
+    data:
+      - name: MAMBU_USERID
+        value: UERCU1VzZXI=
+      - name: MAMBU_PASSWORD
+        value: UERCU3BvYzIwMjBA
+      - name: signKey
+        value: bzhYZU5RcmM0czNMWmpNNzIwdm5HZk5yQ1BvaGJBS3RuVUJKVHh0Y1g2VT0=
+  healthCheckPath: /mambuaccountservice/actuator/health
+  healthCheckDelay: 15
+  healthCheckTimeout: 5
+
+services:
+  port: 80
+  protocol: TCP
+  type: ClusterIP
+  annotations:
+    alb.ingress.kubernetes.io/target-type: ip
+  name: mambu-account-service-service
+  context: /mambuaccountservice/*

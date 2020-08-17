@@ -1,0 +1,13 @@
+apiVersion: v1
+entries:
+  pdbs.mambuaccountservice:
+  - apiVersion: v1
+    appVersion: "1.0"
+    created: "2020-08-17T06:05:50.657196137-04:00"
+    description: A Helm chart for mambu account service
+    digest: ed1b3d9df9976bcd9389c762739bcb9359b1cc327d20b968a954d8b320479885
+    name: pdbs.mambuaccountservice
+    urls:
+    - https://github.com/kajolasabe/helmcharts.git/pdbs.mambuaccountservice-0.1.0.tgz
+    version: 0.1.0
+generated: "2020-08-17T06:05:50.656463734-04:00"
